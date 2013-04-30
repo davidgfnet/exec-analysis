@@ -100,6 +100,9 @@ int main(int argc, char ** argv) {
 			}
 		}
 	}
+	if (strcmp(argv[2],"printiat") == 0) {
+		getIAT(bin);
+	}
 	
 	return 0;
 }

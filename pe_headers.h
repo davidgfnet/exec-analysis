@@ -3,7 +3,13 @@
 #define WORD  unsigned short
 #define DWORD unsigned int
 #define LONG  unsigned long
+#define ULONG unsigned long
+#define PBYTE unsigned char *
+#define DWORD_PTR DWORD*
+#define LONG_PTR LONG*
+#define LPVOID void *
 
+#define IMAGE_DIRECTORY_ENTRY_IMPORT 1
 #define IMAGE_SIZEOF_SHORT_NAME 8
 #define IMAGE_NUMBEROF_DIRECTORY_ENTRIES 16
 
@@ -100,4 +106,36 @@ typedef struct _IMAGE_DOS_HEADER
      WORD e_res2[10];
      LONG e_lfanew;
 } IMAGE_DOS_HEADER, *PIMAGE_DOS_HEADER;
+
+typedef struct _IMAGE_IMPORT_DESCRIPTOR {
+    union {
+        ULONG   Characteristics;
+        ULONG   OriginalFirstThunk;
+    } DUMMYUNIONNAME;
+    ULONG   TimeDateStamp;
+    ULONG   ForwarderChain;
+    ULONG   Name;
+    ULONG   FirstThunk;
+} IMAGE_IMPORT_DESCRIPTOR, *PIMAGE_IMPORT_DESCRIPTOR;
+
+typedef struct _IMAGE_IMPORT_BY_NAME {
+	WORD Hint;
+	BYTE Name[1];
+} IMAGE_IMPORT_BY_NAME,*PIMAGE_IMPORT_BY_NAME;
+
+typedef struct _IMAGE_THUNK_DATA {
+    union {
+        ULONG ForwarderString;
+        ULONG Function;
+        ULONG Ordinal;
+        ULONG AddressOfData;
+    } u1;
+} IMAGE_THUNK_DATA, *PIMAGE_THUNK_DATA;
+
+#ifndef FIELD_OFFSET
+#define FIELD_OFFSET(type,field) ((LONG)&(((type *)0)->field))
+#endif
+
+#define IMAGE_FIRST_SECTION(h) ((PIMAGE_SECTION_HEADER)((DWORD)h+FIELD_OFFSET(IMAGE_NT_HEADERS,OptionalHeader)+((PIMAGE_NT_HEADERS)(h))->FileHeader.SizeOfOptionalHeader))
+
 
